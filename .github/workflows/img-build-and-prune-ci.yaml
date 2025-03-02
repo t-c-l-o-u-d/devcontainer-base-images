@@ -1,0 +1,73 @@
+# GNU Affero General Public License v3.0 or later (see COPYING or https://www.gnu.org/licenses/agpl.txt)
+
+name: Buildah Image CI
+on:
+  workflow_call:
+    inputs:
+      IMAGE_NAME:
+        required: true
+        type: string
+      IMAGE_FILE:
+          required: true
+          type: string
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Create the date tag
+      run: echo "DATE_TAG=$(date +%Y%m%d%H%M%S)" >> $GITHUB_ENV
+    - name: Authenticate to the registry
+      run: echo "${{ secrets.REGISTRY_AUTH_TOKEN }}" | buildah login ghcr.io -u ${{ github.actor }} --password-stdin
+    - uses: actions/checkout@v4
+      with:
+        submodules: 'recursive'
+    - name: Build the container image
+      run: |
+        buildah build \
+        --squash=true \
+        --file ${{ inputs.IMAGE_FILE }} \
+        --tag ghcr.io/${{ github.repository }}/${{ inputs.IMAGE_NAME }}:${{ env.DATE_TAG }} \
+        --tag ghcr.io/${{ github.repository }}/${{ inputs.IMAGE_NAME }}:latest
+    - name: Push the container image
+      run: |
+        buildah push \
+        --format oci \
+        ghcr.io/${{ github.repository }}/${{ inputs.IMAGE_NAME }}:${{ env.DATE_TAG }}
+
+        buildah push \
+        --format oci \
+        ghcr.io/${{ github.repository }}/${{ inputs.IMAGE_NAME }}:latest
+  prune:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Prune all but the most recent 7 images
+        run: |
+          IMAGES_URL=$(
+            curl -Ls \
+              -H "Accept: application/vnd.github+json" \
+              -H "Authorization: Bearer ${{ secrets.REGISTRY_AUTH_TOKEN }}" \
+              -H "X-GitHub-Api-Version: 2022-11-28" \
+              --url "https://api.github.com/user/packages?package_type=container" \
+            | jq -r '.[] | select(.url | test("${{ inputs.IMAGE_NAME }}")) | .url'
+          )
+
+          IMAGES_LIST=$(
+            curl -Ls \
+              -H "Accept: application/vnd.github+json" \
+              -H "Authorization: Bearer ${{ secrets.REGISTRY_AUTH_TOKEN }}" \
+              -H "X-GitHub-Api-Version: 2022-11-28" \
+              --url "${IMAGES_URL}/versions" \
+            | jq -r -s '.[] | sort_by(.created_at) | reverse | .[7:] | .[].url'
+          )
+
+          if [[ -n ${IMAGES_LIST} ]]; then
+            while read -r IMAGE; do
+              curl -Ls \
+                -X DELETE \
+                -H "Accept: application/vnd.github+json" \
+                -H "Authorization: Bearer ${{ secrets.REGISTRY_AUTH_TOKEN }}" \
+                -H "X-GitHub-Api-Version: 2022-11-28" \
+                --url "${IMAGE}"
+            done <<< "${IMAGES_LIST}"
+          fi

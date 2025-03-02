@@ -1,0 +1,51 @@
+# GNU Affero General Public License v3.0 or later (see COPYING or https://www.gnu.org/licenses/agpl.txt)
+
+FROM quay.io/fedora/fedora-minimal:latest
+
+# setup bash
+COPY .submodules/config-bash/bashrc /etc/skel/.bashrc
+COPY .submodules/config-bash/aliases /etc/skel/.config/bash/aliases
+COPY .submodules/config-bash/functions /etc/skel/.config/bash/functions
+
+# setup passwordless sudo for the wheel group
+RUN mkdir --parents --mode=750 /etc/sudoers.d &&\
+    echo "%wheel ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/wheel-nopasswd &&\
+    chmod 440 /etc/sudoers.d/wheel-nopasswd
+
+# enable man page installation
+RUN sed --in-place --expression 's/tsflags\=nodocs//g' /etc/dnf/dnf.conf
+
+# install missing man pages
+RUN dnf5 reinstall --assumeyes $(rpm --query --all --docfiles --state --queryformat "PACKAGE: %{NAME}-%{VERSION}-%{RELEASE}\n" | sed --quiet --regexp-extended '/PACKAGE: /{s/PACKAGE: //; h; b}; /^not installed/{g; p}' | uniq)
+
+# install some packages
+RUN dnf5 install --assumeyes \
+    7z \
+    bash-completion \
+    file \
+    git \
+    gzip \
+    htop \
+    ibm-plex-mono-fonts \
+    man-db \
+    rootfiles \
+    rsync \
+    sudo \
+    tar \
+    unrar \
+    unzip \
+    watch \
+    which \
+    xdg-utils
+
+# remove some unnecessary packages
+RUN dnf5 remove --assumeyes \
+    nano
+
+# clean up after ourselves
+RUN dnf5 clean all
+
+LABEL org.opencontainers.image.authors "https://github.com/t-c-l-o-u-d"
+LABEL org.opencontainers.image.description "A Development Container based on the latest stable Fedora"
+LABEL org.opencontainers.image.licenses "AGPL-3.0-or-later"
+LABEL org.opencontainers.image.source "https://github.com/t-c-l-o-u-d/devcontainer-base-images"

@@ -1,0 +1,25 @@
+# GNU Affero General Public License v3.0 or later (see COPYING or https://www.gnu.org/licenses/agpl.txt)
+
+name: Main
+on:
+  push:
+    branches: [ "main" ]
+  schedule:
+    - cron: '0 0 * * *'
+jobs:
+  create-matrix:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - IMAGE_NAME: "arch-linux-devcontainer"
+            IMAGE_FILE: "Containerfile.ArchLinux"
+          - IMAGE_NAME: "fedora-devcontainer"
+            IMAGE_FILE: "Containerfile.Fedora"
+          - IMAGE_NAME: "ubuntu-lts-devcontainer"
+            IMAGE_FILE: "Containerfile.UbuntuLTS"
+    uses: ./.github/workflows/img-build-and-prune-ci.yaml
+    with:
+      IMAGE_NAME: ${{ matrix.IMAGE_NAME }}
+      IMAGE_FILE: ${{ matrix.IMAGE_FILE }}
+    secrets: inherit
