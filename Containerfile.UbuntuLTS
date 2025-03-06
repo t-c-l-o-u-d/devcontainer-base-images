@@ -39,6 +39,9 @@ ENV PACKAGES="\
 
 RUN apt-get install -y ${PACKAGES}
 
+# create the wheel group
+RUN groupadd wheel
+
 LABEL org.opencontainers.image.authors "https://github.com/t-c-l-o-u-d"
 LABEL org.opencontainers.image.description "A Development Container based on the latest Ubuntu LTS"
 LABEL org.opencontainers.image.licenses "AGPL-3.0-or-later"
