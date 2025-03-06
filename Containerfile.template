@@ -1,7 +1,7 @@
 # GNU Affero General Public License v3.0 or later (see COPYING or https://www.gnu.org/licenses/agpl.txt)
 
 FROM ghcr.io/t-c-l-o-u-d/devcontainer-base-images/arch-linux-devcontainer:latest
-# FROM ghcr.io/t-c-l-o-u-d/devcontainer-base-images/debian-devcontainer:latest
+# FROM ghcr.io/t-c-l-o-u-d/devcontainer-base-images/ubuntu-lts-devcontainer:latest
 # FROM ghcr.io/t-c-l-o-u-d/devcontainer-base-images/fedora-devcontainer:latest
 
 # pull in USER from devcontainer.json
