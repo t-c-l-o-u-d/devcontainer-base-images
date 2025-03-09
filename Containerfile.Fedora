@@ -1,6 +1,6 @@
 # GNU Affero General Public License v3.0 or later (see COPYING or https://www.gnu.org/licenses/agpl.txt)
 
-FROM quay.io/fedora/fedora-minimal:latest
+FROM quay.io/fedora/fedora:42
 
 # setup bash
 COPY .submodules/config-bash/bashrc /etc/skel/.bashrc
@@ -23,15 +23,12 @@ RUN dnf5 install --assumeyes \
     7z \
     bash-completion \
     file \
+    gawk \
     git \
-    gzip \
     htop \
     ibm-plex-mono-fonts \
     man-db \
-    rootfiles \
     rsync \
-    sudo \
-    tar \
     unrar \
     unzip \
     watch \
