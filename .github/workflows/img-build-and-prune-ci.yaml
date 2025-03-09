@@ -25,6 +25,7 @@ jobs:
       run: |
         buildah build \
         --squash=true \
+        --platform=linux/amd64 \
         --file ${{ inputs.IMAGE_FILE }} \
         --tag ghcr.io/${{ github.repository }}/${{ inputs.IMAGE_NAME }}:${{ env.DATE_TAG }} \
         --tag ghcr.io/${{ github.repository }}/${{ inputs.IMAGE_NAME }}:latest
