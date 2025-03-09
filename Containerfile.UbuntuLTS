@@ -26,6 +26,7 @@ RUN yes | unminimize
 ENV PACKAGES="\
     7zip \
     bash-completion \
+    build-essential \
     curl \
     file \
     fonts-ibm-plex \
