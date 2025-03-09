@@ -7,8 +7,8 @@ FROM ghcr.io/t-c-l-o-u-d/devcontainer-base-images/arch-linux-devcontainer:latest
 # pull in USER from devcontainer.json
 ARG USER
 
-# add the USER to the image; !!!!! /usrsbin/bash on Ubuntu !!!!!
-RUN useradd --create-home --shell /usr/sbin/bash --groups wheel ${USER}
+# add the USER to the image
+RUN useradd --create-home --shell /usr/bin/bash --groups wheel ${USER}
 
 # =======================================
 # repository specific commands start here
