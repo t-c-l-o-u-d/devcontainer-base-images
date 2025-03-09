@@ -16,11 +16,10 @@ RUN mkdir --parents --mode=750 /etc/sudoers.d &&\
 RUN apt-get update
 
 # mitigate errors for unminimize
-ENV DEBIAN_FRONTEND=noninteractive
-RUN apt-get install -y apt-utils
+RUN export DEBIAN_FRONTEND=noninteractive; apt-get install -y apt-utils
 
 # install missing man pages
-RUN yes | unminimize
+RUN export DEBIAN_FRONTEND=noninteractive; yes | unminimize
 
 # install some packages
 ENV PACKAGES="\
@@ -33,6 +32,7 @@ ENV PACKAGES="\
     git \
     gnu-which \
     htop \
+    locales \
     man-db \
     manpages \
     rsync \
@@ -42,10 +42,12 @@ ENV PACKAGES="\
     xdg-utils \
     "
 
-RUN apt-get install -y ${PACKAGES}
+RUN export DEBIAN_FRONTEND=noninteractive; apt-get install -y ${PACKAGES}
 
 # create the wheel group
 RUN groupadd wheel
+
+RUN locale-gen ${LANG}
 
 LABEL org.opencontainers.image.authors "https://github.com/t-c-l-o-u-d"
 LABEL org.opencontainers.image.description "A Development Container based on the latest Ubuntu LTS"
