@@ -47,7 +47,11 @@ RUN export DEBIAN_FRONTEND=noninteractive; apt-get install -y ${PACKAGES}
 # create the wheel group
 RUN groupadd wheel
 
+# fix missing language files
 RUN locale-gen ${LANG}
+
+# cleanup ubuntu user
+RUN userdel --remove ubuntu || true
 
 LABEL org.opencontainers.image.authors "https://github.com/t-c-l-o-u-d"
 LABEL org.opencontainers.image.description "A Development Container based on the latest Ubuntu LTS"
