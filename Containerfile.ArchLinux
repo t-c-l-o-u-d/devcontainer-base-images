@@ -15,6 +15,10 @@ RUN mkdir --parents --mode=750 /etc/sudoers.d &&\
 # enable man page installation
 RUN sed --in-place --expression '/^NoExtract.*usr\/share\/man.*/ s/^/#/' /etc/pacman.conf
 
+# update the default mirrorlist
+RUN curl --silent "https://archlinux.org/mirrorlist/?country=US&protocol=https&ip_version=4&use_mirror_status=on" |\
+    sed -e 's/^#Server/Server/' -e '/^#/d' > /etc/pacman.d/mirrorlist
+
 # install missing man pages
 RUN pacman --sync --refresh --noconfirm $(pacman --query --quiet $(pacman --files --refresh --quiet /usr/share/man/ | cut -d/ -f2) 2> /dev/null)
 
