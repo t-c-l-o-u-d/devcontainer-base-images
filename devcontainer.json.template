@@ -8,7 +8,6 @@
             "USER": "${localEnv:USER}"
         },
         "options": [
-            "--platform=linux/amd64",
             "--pull=newer",
             "--squash-all"
         ]
@@ -21,7 +20,6 @@
         "--env=TZ=Etc/UTC",
         "--hostname=${localWorkspaceFolderBasename}-devcontainer",
         "--name=${localWorkspaceFolderBasename}-devcontainer",
-        "--platform=linux/amd64",
         "--userns=keep-id",
         "--volume=${localWorkspaceFolder}:/workspaces/${localWorkspaceFolderBasename}:Z"
        ],
