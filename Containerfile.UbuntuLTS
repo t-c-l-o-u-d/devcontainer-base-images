@@ -3,7 +3,8 @@
 FROM public.ecr.aws/lts/ubuntu:24.04
 
 # setup bash
-COPY .submodules/config-bash/bashrc /etc/skel/.bashrc
+COPY .submodules/config-bash/bash_profile /etc/skel/.bash_profile
+COPY .submodules/config-bash/bashrc /etc/skel/.config/bash/bashrc
 COPY .submodules/config-bash/aliases /etc/skel/.config/bash/aliases
 COPY .submodules/config-bash/functions /etc/skel/.config/bash/functions
 
