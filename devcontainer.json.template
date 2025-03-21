@@ -8,7 +8,7 @@
             "USER": "${localEnv:USER}"
         },
         "options": [
-            "--pull=newer",
+            "--pull=always",
             "--squash-all"
         ]
     },
