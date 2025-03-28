@@ -1,5 +1,8 @@
 // GNU Affero General Public License v3.0 or later (see COPYING or https://www.gnu.org/licenses/agpl.txt)
-// Documentation: https://containers.dev/implementors/json_reference/
+// Documentation:
+// https://containers.dev/implementors/json_reference/
+// https://code.visualstudio.com/docs/terminal/profiles
+//
 {
     "name": "${localWorkspaceFolderBasename}-devcontainer",
     "build": {
@@ -35,7 +38,14 @@
                 "git.confirmSync": false,
                 "markdown.preview.fontFamily": "'IBM Plex Sans', 'IBM Plex Mono'",
                 "workbench.startupEditor": "none",
-                "workbench.welcomePage.walkthroughs.openOnInstall": false
+                "workbench.welcomePage.walkthroughs.openOnInstall": false,
+                "terminal.integrated.profiles.linux": {
+                    "bash-login": {
+                      "path": "/usr/bin/bash",
+                      "args": ["--login"]
+                    }
+                  },
+                "terminal.integrated.defaultProfile.linux": "bash-login"
                 // repository specific settings go here
             },
             "extensions": [
