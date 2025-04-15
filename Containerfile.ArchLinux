@@ -27,7 +27,7 @@ RUN pacman --sync --refresh --noconfirm $(pacman --query --quiet $(pacman --file
 RUN pacman --sync --refresh --sysupgrade --noconfirm
 
 # install some packages
-RUN pacman --sync --noconfirm \
+RUN pacman --sync --refresh --noconfirm \
     7zip \
     bash-completion \
     git \
