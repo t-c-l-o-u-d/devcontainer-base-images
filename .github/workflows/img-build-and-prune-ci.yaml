@@ -53,7 +53,7 @@ jobs:
             | jq --arg IMAGE_NAME ${{ inputs.IMAGE_NAME }} -r '.[] | select(.url | test($IMAGE_NAME)) | .url'
           )
 
-          echo "${IMAGES_URL}"
+          echo "URL: ${IMAGES_URL}"
 
           IMAGES_LIST=$(
             curl -Ls \
@@ -63,8 +63,6 @@ jobs:
               --url "${IMAGES_URL}/versions" \
             | jq -r -s '.[] | sort_by(.created_at) | reverse | .[7:] | .[].url'
           )
-
-          echo "${IMAGES_LIST}"
 
           if [[ -n ${IMAGES_LIST} ]]; then
             while read -r IMAGE; do
