@@ -30,13 +30,10 @@
         "vscode": {
             "settings": {
                 "breadcrumbs.enabled": true,
-                "editor.codeLensFontFamily": "'IBM Plex Mono'",
-                "editor.fontFamily": "'IBM Plex Mono'",
                 "editor.minimap.enabled": false,
                 "editor.stickyScroll.enabled": false,
                 "git.autofetch": true,
                 "git.confirmSync": false,
-                "markdown.preview.fontFamily": "'IBM Plex Sans', 'IBM Plex Mono'",
                 "workbench.startupEditor": "none",
                 "workbench.welcomePage.walkthroughs.openOnInstall": false,
                 "terminal.integrated.profiles.linux": {
