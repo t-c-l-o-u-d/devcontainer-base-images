@@ -50,8 +50,10 @@ jobs:
               -H "Authorization: Bearer ${{ secrets.REGISTRY_AUTH_TOKEN }}" \
               -H "X-GitHub-Api-Version: 2022-11-28" \
               --url "https://api.github.com/user/packages?package_type=container" \
-            | jq -r '.[] | select(.url | test("${{ inputs.IMAGE_NAME }}")) | .url'
+            | jq --arg IMAGE_NAME ${{ inputs.IMAGE_NAME }} -r '.[] | select(.url | test($IMAGE_NAME)) | .url'
           )
+
+          echo "${IMAGES_URL}"
 
           IMAGES_LIST=$(
             curl -Ls \
@@ -62,8 +64,11 @@ jobs:
             | jq -r -s '.[] | sort_by(.created_at) | reverse | .[7:] | .[].url'
           )
 
+          echo "${IMAGES_LIST}"
+
           if [[ -n ${IMAGES_LIST} ]]; then
             while read -r IMAGE; do
+              echo "Deleting: ${IMAGE}"
               curl -Ls \
                 -X DELETE \
                 -H "Accept: application/vnd.github+json" \
