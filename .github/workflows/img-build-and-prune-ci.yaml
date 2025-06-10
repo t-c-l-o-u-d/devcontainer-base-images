@@ -24,7 +24,7 @@ jobs:
     - name: Build the container image
       run: |
         buildah build \
-        --squash=false \
+        --squash=true \
         --platform=linux/amd64 \
         --file ${{ inputs.IMAGE_FILE }} \
         --tag ghcr.io/${{ github.repository }}/${{ inputs.IMAGE_NAME }}:${{ env.DATE_TAG }} \
