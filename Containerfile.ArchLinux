@@ -13,18 +13,22 @@ RUN mkdir --parents --mode=750 /etc/sudoers.d &&\
     echo "%wheel ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/wheel-nopasswd &&\
     chmod 440 /etc/sudoers.d/wheel-nopasswd
 
-# enable man page installation
-RUN sed --in-place --expression '/^NoExtract.*usr\/share\/man.*/ s/^/#/' /etc/pacman.conf
+# enable man pages, enable progress bars, enable color output
+RUN sed --in-place \
+    --expression 's/NoExtract/#NoExtract/' \
+    --expression 's/NoProgressBar/#NoProgressBar/' \
+    --expression 's/#Color/Color/' \
+    /etc/pacman.conf
 
 # update the default mirrorlist
 RUN curl --silent "https://archlinux.org/mirrorlist/?country=US&protocol=https&ip_version=4&use_mirror_status=on" |\
-    sed -e 's/^#Server/Server/' -e '/^#/d' > /etc/pacman.d/mirrorlist
+    sed --expression 's/^#Server/Server/' --expression '/^#/d' > /etc/pacman.d/mirrorlist
+
+# update all packages
+RUN pacman --sync --refresh --sysupgrade --noconfirm
 
 # install missing man pages
-RUN pacman --sync --refresh --noconfirm $(pacman --query --quiet $(pacman --files --refresh --quiet /usr/share/man/ | cut -d/ -f2) 2> /dev/null)
-
-# update all packages as per the documentation
-RUN pacman --sync --refresh --sysupgrade --noconfirm
+RUN pacman --sync --refresh --noconfirm $(pacman --query --quiet $(pacman --query --owns /usr/share/man | awk '{print $5}'))
 
 # install some packages
 RUN pacman --sync --refresh --noconfirm \
