@@ -1,4 +1,5 @@
 # GNU Affero General Public License v3.0 or later (see COPYING or https://www.gnu.org/licenses/agpl.txt)
+# Build and prune images using Buildah and GitHub Container Registry API.
 
 name: Buildah Image CI
 on:
@@ -8,20 +9,26 @@ on:
         required: true
         type: string
       IMAGE_FILE:
-          required: true
-          type: string
+        required: true
+        type: string
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
     - name: Create the date tag
+      id: date_tag
+      shell: bash
       run: echo "DATE_TAG=$(date +%Y%m%d%H%M%S)" >> $GITHUB_ENV
     - name: Authenticate to the registry
+      id: registry_auth
+      shell: bash
       run: echo "${{ secrets.REGISTRY_AUTH_TOKEN }}" | buildah login ghcr.io -u ${{ github.actor }} --password-stdin
     - uses: actions/checkout@v4
       with:
         submodules: 'recursive'
     - name: Build the container image
+      id: build_image
+      shell: bash
       run: |
         buildah build \
         --squash=true \
@@ -30,6 +37,8 @@ jobs:
         --tag ghcr.io/${{ github.repository }}/${{ inputs.IMAGE_NAME }}:${{ env.DATE_TAG }} \
         --tag ghcr.io/${{ github.repository }}/${{ inputs.IMAGE_NAME }}:latest
     - name: Push the container image
+      id: push_image
+      shell: bash
       run: |
         buildah push \
         --format oci \
