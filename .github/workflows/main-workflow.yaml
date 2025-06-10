@@ -12,7 +12,6 @@ on:
 jobs:
   create-matrix:
     name: Build and Prune Images
-    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
