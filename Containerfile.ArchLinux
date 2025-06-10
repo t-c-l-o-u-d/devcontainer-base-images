@@ -24,6 +24,10 @@ RUN sed --in-place \
 RUN curl --silent "https://archlinux.org/mirrorlist/?country=US&protocol=https&ip_version=4&use_mirror_status=on" |\
     sed --expression 's/^#Server/Server/' --expression '/^#/d' > /etc/pacman.d/mirrorlist
 
+# generate the initial pacman keyring
+RUN pacman-key --init && \
+    pacman-key --populate archlinux
+
 # update all packages
 RUN pacman --sync --refresh --sysupgrade --noconfirm
 
