@@ -50,8 +50,8 @@ RUN pacman --sync --refresh --noconfirm \
     unzip \
     xdg-utils
 
-# clean up after ourselves
-RUN rm --recursive --force /var/cache/pacman
+# clean up pacman cache
+RUN pacman -Scc --noconfirm
 
 LABEL org.opencontainers.image.authors "https://github.com/t-c-l-o-u-d"
 LABEL org.opencontainers.image.description "A Development Container based on Arch Linux"
