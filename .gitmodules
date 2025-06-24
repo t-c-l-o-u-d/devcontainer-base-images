@@ -1,5 +1,0 @@
-# GNU Affero General Public License v3.0 or later (see COPYING or https://www.gnu.org/licenses/agpl.txt)
-
-[submodule ".submodules/config-bash"]
-	path = .submodules/config-bash
-	url = https://github.com/t-c-l-o-u-d/config-bash.git

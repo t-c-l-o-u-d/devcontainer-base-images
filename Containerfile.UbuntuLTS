@@ -2,12 +2,6 @@
 
 FROM public.ecr.aws/lts/ubuntu:24.04
 
-# setup bash
-COPY .submodules/config-bash/bash_profile /etc/skel/.bash_profile
-COPY .submodules/config-bash/bashrc /etc/skel/.config/bash/bashrc
-COPY .submodules/config-bash/aliases /etc/skel/.config/bash/aliases
-COPY .submodules/config-bash/functions /etc/skel/.config/bash/functions
-
 # setup passwordless sudo for the wheel group
 RUN mkdir --parents --mode=750 /etc/sudoers.d &&\
     echo "%wheel ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/wheel-nopasswd &&\

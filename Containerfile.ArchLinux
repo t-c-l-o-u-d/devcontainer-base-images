@@ -2,12 +2,6 @@
 
 FROM ghcr.io/archlinux/archlinux:base-devel
 
-# setup bash
-COPY .submodules/config-bash/bash_profile /etc/skel/.bash_profile
-COPY .submodules/config-bash/bashrc /etc/skel/.config/bash/bashrc
-COPY .submodules/config-bash/aliases /etc/skel/.config/bash/aliases
-COPY .submodules/config-bash/functions /etc/skel/.config/bash/functions
-
 # setup passwordless sudo for the wheel group
 RUN mkdir --parents --mode=750 /etc/sudoers.d &&\
     echo "%wheel ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/wheel-nopasswd &&\
@@ -23,6 +17,9 @@ RUN sed --in-place \
 # update the default mirrorlist
 RUN curl --silent "https://archlinux.org/mirrorlist/?country=US&protocol=https&ip_version=4&use_mirror_status=on" |\
     sed --expression 's/^#Server/Server/' --expression '/^#/d' > /etc/pacman.d/mirrorlist
+
+# increase parellel downloads
+RUN sed --expression 's/^#\?ParallelDownloads.*$/ParallelDownloads\ =\ 15/' /etc/pacman.conf
 
 # generate the initial pacman keyring
 RUN pacman-key --init && \
@@ -51,7 +48,7 @@ RUN pacman --sync --refresh --noconfirm \
     xdg-utils
 
 # clean up pacman cache
-RUN pacman -Scc --noconfirm
+RUN pacman --sync --clean --clean --noconfirm
 
 LABEL org.opencontainers.image.authors "https://github.com/t-c-l-o-u-d"
 LABEL org.opencontainers.image.description "A Development Container based on Arch Linux"
