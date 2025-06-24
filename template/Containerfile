@@ -1,0 +1,12 @@
+# GNU Affero General Public License v3.0 or later (see COPYING or https://www.gnu.org/licenses/agpl.txt)
+
+FROM ghcr.io/t-c-l-o-u-d/devcontainer-base-images/arch-linux-devcontainer:latest
+
+# pull in USER from devcontainer.json
+ARG USER
+
+# add the USER to the image
+RUN useradd --create-home --shell /usr/bin/bash --groups wheel ${USER}
+
+# ensure the container starts as USER
+USER ${USER}
