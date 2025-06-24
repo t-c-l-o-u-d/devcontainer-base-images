@@ -10,15 +10,13 @@ Available Images:
 3. [Ubuntu LTS](https://ubuntu.com/)  
     `ghcr.io/t-c-l-o-u-d/devcontainer-base-images/ubuntu-lts-devcontainer:latest`
 
-The `Arch Linux` image is the most thoroughly tested, as I use it in all of my personal development containers.
-
 ## Usage
 ```bash
-$ cp Containerfile.template /your/repo/.devcontainer/Containerfile
+$ cp template/Containerfile /your/repo/.devcontainer/Containerfile
 
-$ cp devcontainer.json.template /your/repo/.devcontainer/devcontainer.json
+$ cp template/devcontainer.json /your/repo/.devcontainer/devcontainer.json
 ```
-Modify `Containerfile` to include any additional items needed for your repository in the indicated area.
+Modify `Containerfile` to include any additional items needed for your repository.
 
 ## Contributing
 This repository reflects my personal perspective and design choices. I am open to community input and suggestions, but I will be selective about incorporating new features to preserve the project's intended purpose and integrity.
