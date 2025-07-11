@@ -4,7 +4,7 @@
 // https://code.visualstudio.com/docs/terminal/profiles
 //
 {
-    "name": "devcontianer-${localWorkspaceFolderBasename}",
+    "name": "devcontainer-${localWorkspaceFolderBasename}",
     "build": {
         "dockerfile": "Containerfile",
         "args": {
@@ -20,11 +20,11 @@
     "workspaceMount": "",
     "runArgs": [
         "--env=TZ=America/Chicago",
-        "--hostname=devcontianer-${localWorkspaceFolderBasename}",
-        "--name=devcontianer-${localWorkspaceFolderBasename}",
+        "--hostname=devcontainer-${localWorkspaceFolderBasename}",
+        "--name=devcontainer-${localWorkspaceFolderBasename}",
         "--userns=keep-id",
         "--volume=${localWorkspaceFolder}:/workspaces/${localWorkspaceFolderBasename}:Z,rw",
-        "--volume=${localENV:HOME}/.bashrc:/home/${localEnv:USER}/.bashrc:Z,ro"
+        "--volume=${localEnv:HOME}/.bashrc:/home/${localEnv:USER}/.bashrc:Z,ro"
        ],
     "customizations": {
         "vscode": {
