@@ -5,9 +5,9 @@ name: Main
 
 on:
   push:
-  #  branches: [ "main" ]
+    branches: [ "main" ]
   schedule:
-  #  - cron: '38 18 */3 * *'
+    - cron: '38 18 */3 * *'
 
 jobs:
   create-matrix:
