@@ -7,7 +7,7 @@ on:
   push:
     branches: [ "main" ]
   schedule:
-    - cron: '38 18 */3 * *'
+    - cron: '38 22 */3 * *'
 
 jobs:
   create-matrix:
