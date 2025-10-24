@@ -51,7 +51,7 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - name: Prune all but the most recent 7 images
+      - name: Prune all but the most recent 3 images
         run: |
           IMAGES_URL=$(
             curl -Ls \
@@ -63,6 +63,7 @@ jobs:
           )
 
           echo "URL: ${IMAGES_URL}"
+          sleep 3
 
           IMAGES_LIST=$(
             curl -Ls \
@@ -70,9 +71,10 @@ jobs:
               -H "Authorization: Bearer ${{ secrets.REGISTRY_AUTH_TOKEN }}" \
               -H "X-GitHub-Api-Version: 2022-11-28" \
               --url "${IMAGES_URL}/versions" \
-            | jq -r -s '.[] | sort_by(.created_at) | reverse | .[7:] | .[].url'
+            | jq -r -s '.[] | sort_by(.created_at) | reverse | .[3:] | .[].url'
           )
 
+          sleep 3
           if [[ -n ${IMAGES_LIST} ]]; then
             while read -r IMAGE; do
               echo "Deleting: ${IMAGE}"
@@ -82,5 +84,6 @@ jobs:
                 -H "Authorization: Bearer ${{ secrets.REGISTRY_AUTH_TOKEN }}" \
                 -H "X-GitHub-Api-Version: 2022-11-28" \
                 --url "${IMAGE}"
+              sleep 3
             done <<< "${IMAGES_LIST}"
           fi
