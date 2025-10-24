@@ -1,6 +1,6 @@
 # GNU Affero General Public License v3.0 or later (see COPYING or https://www.gnu.org/licenses/agpl.txt)
 
-FROM quay.io/fedora/fedora:42
+FROM quay.io/fedora/fedora:43
 
 # setup passwordless sudo for the wheel group
 RUN mkdir --parents --mode=750 /etc/sudoers.d &&\
