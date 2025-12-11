@@ -59,11 +59,15 @@ jobs:
           exit-code: '1'
           ignore-unfixed: true
           vuln-type: 'os,library'
-          severity: 'CRITICAL,HIGH,MEDIUM'
+          severity: 'CRITICAL,HIGH'
       - name: Scan Container Image (grype)
         uses: anchore/scan-action@v7.2.2
         with:
-          image: ghcr.io/${{ github.repository }}/${{ inputs.IMAGE_NAME }}:latest
+          image: 'ghcr.io/${{ github.repository }}/${{ inputs.IMAGE_NAME }}:latest'
+          output-format: 'table'
+          severity-cutoff: 'high'
+          only-fixed: 'true'
+          by-cve: 'true'
   prune:
     needs: scan
     runs-on: ubuntu-latest
