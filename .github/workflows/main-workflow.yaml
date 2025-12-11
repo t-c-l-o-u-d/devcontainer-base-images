@@ -22,7 +22,7 @@ jobs:
             IMAGE_FILE: "Containerfile.Fedora"
           - IMAGE_NAME: "ubuntu-lts-devcontainer"
             IMAGE_FILE: "Containerfile.UbuntuLTS"
-    uses: ./.github/workflows/img-build-and-prune-ci.yaml
+    uses: .github/workflows/img-build-and-prune-ci.yaml
     with:
       IMAGE_NAME: ${{ matrix.IMAGE_NAME }}
       IMAGE_FILE: ${{ matrix.IMAGE_FILE }}
