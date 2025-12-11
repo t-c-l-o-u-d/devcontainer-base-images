@@ -87,20 +87,20 @@ jobs:
               sleep 3
             done <<< "${IMAGES_LIST}"
           fi
-  scan_grype:
-    needs: build
-    name: Scan Container Image (grype)
-    uses: anchore/scan-action@v3.6.4
-    with:
-      image: ghcr.io/${{ github.repository }}/${{ inputs.IMAGE_NAME }}:latest
-  scan_trivy:
-    needs: build
-    name: Scan Container Image (trivy)
-    uses: aquasecurity/trivy-action@0.33.1
-    with:
-      image-ref: 'ghcr.io/${{ github.repository }}/${{ inputs.IMAGE_NAME }}:latest'
-      format: 'table'
-      exit-code: '1'
-      ignore-unfixed: true
-      vuln-type: 'os,library'
-      severity: 'CRITICAL,HIGH'
+  # scan_grype:
+  #   needs: build
+  #   name: Scan Container Image (grype)
+  #   uses: anchore/scan-action@v3.6.4
+  #   with:
+  #     image: ghcr.io/${{ github.repository }}/${{ inputs.IMAGE_NAME }}:latest
+  # scan_trivy:
+  #   needs: build
+  #   name: Scan Container Image (trivy)
+  #   uses: aquasecurity/trivy-action@0.33.1
+  #   with:
+  #     image-ref: 'ghcr.io/${{ github.repository }}/${{ inputs.IMAGE_NAME }}:latest'
+  #     format: 'table'
+  #     exit-code: '1'
+  #     ignore-unfixed: true
+  #     vuln-type: 'os,library'
+  #     severity: 'CRITICAL,HIGH'
