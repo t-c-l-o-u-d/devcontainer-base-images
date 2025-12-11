@@ -61,7 +61,7 @@ jobs:
           vuln-type: 'os,library'
           severity: 'CRITICAL,HIGH,MEDIUM'
       - name: Scan Container Image (grype)
-        uses: anchore/scan-action@v3.6.4
+        uses: anchore/scan-action@v7.2.2
         with:
           image: ghcr.io/${{ github.repository }}/${{ inputs.IMAGE_NAME }}:latest
   prune:
