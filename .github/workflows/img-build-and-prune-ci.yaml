@@ -49,10 +49,12 @@ jobs:
         ghcr.io/${{ github.repository }}/${{ inputs.IMAGE_NAME }}:latest
   scan_grype:
     needs: build
-    name: Scan Container Image (grype)
-    uses: anchore/scan-action@v3.6.4
-    with:
-      image: ghcr.io/${{ github.repository }}/${{ inputs.IMAGE_NAME }}:latest
+    runs-on: ubuntu-latest
+    steps:
+      - name: Scan Container Image (grype)
+        uses: anchore/scan-action@v3.6.4
+        with:
+          image: ghcr.io/${{ github.repository }}/${{ inputs.IMAGE_NAME }}:latest
   prune:
     needs: scan_grype
     runs-on: ubuntu-latest
