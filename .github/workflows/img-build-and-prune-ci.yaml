@@ -51,10 +51,6 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - name: Scan Container Image (grype)
-        uses: anchore/scan-action@v3.6.4
-        with:
-          image: ghcr.io/${{ github.repository }}/${{ inputs.IMAGE_NAME }}:latest
       - name: Scan Container Image (trivy)
         uses: aquasecurity/trivy-action@0.33.1
         with:
@@ -64,6 +60,10 @@ jobs:
           ignore-unfixed: true
           vuln-type: 'os,library'
           severity: 'CRITICAL,HIGH,MEDIUM'
+      - name: Scan Container Image (grype)
+        uses: anchore/scan-action@v3.6.4
+        with:
+          image: ghcr.io/${{ github.repository }}/${{ inputs.IMAGE_NAME }}:latest
   prune:
     needs: scan
     runs-on: ubuntu-latest
