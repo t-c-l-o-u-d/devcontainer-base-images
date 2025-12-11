@@ -23,7 +23,7 @@ jobs:
       id: registry_auth
       shell: bash
       run: echo "${{ secrets.REGISTRY_AUTH_TOKEN }}" | buildah login ghcr.io -u ${{ github.actor }} --password-stdin
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
       with:
         submodules: 'recursive'
     - name: Build the container image
