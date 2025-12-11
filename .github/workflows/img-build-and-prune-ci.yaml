@@ -47,8 +47,14 @@ jobs:
         buildah push \
         --format oci \
         ghcr.io/${{ github.repository }}/${{ inputs.IMAGE_NAME }}:latest
-  prune:
+  scan_grype:
     needs: build
+    name: Scan Container Image (grype)
+    uses: anchore/scan-action@v3.6.4
+    with:
+      image: ghcr.io/${{ github.repository }}/${{ inputs.IMAGE_NAME }}:latest
+  prune:
+    needs: scan_grype
     runs-on: ubuntu-latest
     steps:
       - name: Prune all but the most recent 3 images
@@ -87,12 +93,7 @@ jobs:
               sleep 3
             done <<< "${IMAGES_LIST}"
           fi
-  # scan_grype:
-  #   needs: build
-  #   name: Scan Container Image (grype)
-  #   uses: anchore/scan-action@v3.6.4
-  #   with:
-  #     image: ghcr.io/${{ github.repository }}/${{ inputs.IMAGE_NAME }}:latest
+
   # scan_trivy:
   #   needs: build
   #   name: Scan Container Image (trivy)
