@@ -19,7 +19,7 @@ RUN curl --silent "https://archlinux.org/mirrorlist/?country=US&protocol=https&i
     sed --expression 's/^#Server/Server/' --expression '/^#/d' > /etc/pacman.d/mirrorlist
 
 # increase parallel downloads
-RUN sed --expression 's/^#\?ParallelDownloads.*$/ParallelDownloads\ =\ 15/' /etc/pacman.conf
+RUN sed --expression 's/^#\?ParallelDownloads.*$/ParallelDownloads\ =\ 5/' /etc/pacman.conf
 
 # generate the initial pacman keyring
 RUN pacman-key --init && \
