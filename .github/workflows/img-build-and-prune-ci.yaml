@@ -51,6 +51,7 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v6
       - name: Scan Container Image (trivy)
         uses: aquasecurity/trivy-action@0.33.1
         with:
@@ -60,6 +61,7 @@ jobs:
           ignore-unfixed: true
           vuln-type: 'os,library'
           severity: 'CRITICAL,HIGH'
+          trivyignores: '.trivyignore'
       - name: Scan Container Image (grype)
         uses: anchore/scan-action@v7.3.2
         with:
