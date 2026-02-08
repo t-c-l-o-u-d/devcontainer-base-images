@@ -1,0 +1,11 @@
+# Go stdlib vulnerabilities in usr/bin/captree from archlinux:base-devel base image
+# captree is built with Go v1.25.3; fixes available in newer Go versions
+ignore:
+  - vulnerability: CVE-2025-61726
+  - vulnerability: CVE-2025-61727
+  - vulnerability: CVE-2025-61728
+  - vulnerability: CVE-2025-61729
+  - vulnerability: CVE-2025-61730
+  - vulnerability: CVE-2025-61731
+  - vulnerability: CVE-2025-68119
+  - vulnerability: CVE-2025-68121
