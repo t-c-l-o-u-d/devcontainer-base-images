@@ -1,13 +1,9 @@
-# GNU Affero General Public License v3.0 or later (see COPYING or https://www.gnu.org/licenses/agpl.txt)
+# AGPL-3.0-or-later (see COPYING)
 # Main workflow for building and pruning devcontainer base images.
-
+---
 name: Main
-
 on:
-  schedule:
-    - cron: '38 22 */3 * *'
   workflow_dispatch:
-
 jobs:
   create-matrix:
     name: Build and Prune Images

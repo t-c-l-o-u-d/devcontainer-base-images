@@ -1,53 +1,46 @@
-// GNU Affero General Public License v3.0 or later (see COPYING or https://www.gnu.org/licenses/agpl.txt)
-// Documentation:
-// https://containers.dev/implementors/json_reference/
-// https://code.visualstudio.com/docs/terminal/profiles
-//
 {
-    "name": "devcontainer-${localWorkspaceFolderBasename}",
-    "build": {
-        "dockerfile": "Containerfile",
-        "args": {
-            "USER": "${localEnv:USER}"
-        },
-        "options": [
-            "--pull=always",
-            "--squash-all"
-        ]
+  "name": "devcontainer-${localWorkspaceFolderBasename}",
+  "build": {
+    "dockerfile": "Containerfile",
+    "args": {
+      "USER": "${localEnv:USER}"
     },
-    "remoteUser": "${localEnv:USER}",
-    "updateRemoteUserUID": true,
-    "workspaceMount": "",
-    "runArgs": [
-        "--env=TZ=America/Chicago",
-        "--hostname=devcontainer-${localWorkspaceFolderBasename}",
-        "--name=devcontainer-${localWorkspaceFolderBasename}",
-        "--userns=keep-id",
-        "--volume=${localWorkspaceFolder}:/workspaces/${localWorkspaceFolderBasename}:Z,rw",
-        "--volume=${localEnv:HOME}/.bashrc:/home/${localEnv:USER}/.bashrc:Z,ro"
-       ],
-    "customizations": {
-        "vscode": {
-            "settings": {
-                "breadcrumbs.enabled": true,
-                "editor.minimap.enabled": false,
-                "editor.stickyScroll.enabled": false,
-                "git.autofetch": true,
-                "git.confirmSync": false,
-                "workbench.startupEditor": "none",
-                "workbench.welcomePage.walkthroughs.openOnInstall": false,
-                "terminal.integrated.profiles.linux": {
-                    "bash": {
-                      "path": "/usr/bin/bash"
-                    }
-                  },
-                "terminal.integrated.defaultProfile.linux": "bash"
-                // repository specific settings go here
-            },
-            "extensions": [
-                "ms-azuretools.vscode-containers"
-                // repository specific extensions go here
-            ]
-        }
+    "options": [
+      "--pull=always",
+      "--squash-all"
+    ]
+  },
+  "remoteUser": "${localEnv:USER}",
+  "updateRemoteUserUID": true,
+  "workspaceMount": "",
+  "runArgs": [
+    "--env=TZ=America/Chicago",
+    "--hostname=devcontainer-${localWorkspaceFolderBasename}",
+    "--name=devcontainer-${localWorkspaceFolderBasename}",
+    "--userns=keep-id",
+    "--volume=${localWorkspaceFolder}:/workspaces/${localWorkspaceFolderBasename}:Z,rw",
+    "--volume=${localEnv:HOME}/.bashrc:/home/${localEnv:USER}/.bashrc:Z,ro"
+  ],
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "breadcrumbs.enabled": true,
+        "editor.minimap.enabled": false,
+        "editor.stickyScroll.enabled": false,
+        "git.autofetch": true,
+        "git.confirmSync": false,
+        "workbench.startupEditor": "none",
+        "workbench.welcomePage.walkthroughs.openOnInstall": false,
+        "terminal.integrated.profiles.linux": {
+          "bash": {
+            "path": "/usr/bin/bash"
+          }
+        },
+        "terminal.integrated.defaultProfile.linux": "bash"
+      },
+      "extensions": [
+        "ms-azuretools.vscode-containers"
+      ]
     }
+  }
 }
