@@ -20,91 +20,86 @@ jobs:
         shell: bash
         run: echo "DATE_TAG=$(date +%Y%m%d%H%M%S)" >> $GITHUB_ENV
       - name: Authenticate to the registry
-        id: registry_auth
         shell: bash
-        run: echo "${{ secrets.REGISTRY_AUTH_TOKEN }}" | buildah login ghcr.io -u ${{ github.actor }} --password-stdin
-      - uses: actions/checkout@v6
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | buildah login ghcr.io -u ${{ github.actor }} --password-stdin
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         with:
           submodules: 'recursive'
       - name: Build the container image
-        id: build_image
         shell: bash
         run: |
           buildah build \
-          --squash=true \
-          --platform=linux/amd64 \
-          --file ${{ inputs.IMAGE_FILE }} \
-          --tag ghcr.io/${{ github.repository }}/${{ inputs.IMAGE_NAME }}:${{ env.DATE_TAG }} \
-          --tag ghcr.io/${{ github.repository }}/${{ inputs.IMAGE_NAME }}:latest
+            --squash=true \
+            --platform=linux/amd64 \
+            --file ${{ inputs.IMAGE_FILE }} \
+            --tag ghcr.io/${{ github.repository }}/${{ inputs.IMAGE_NAME }}:${{ env.DATE_TAG }} \
+            --tag ghcr.io/${{ github.repository }}/${{ inputs.IMAGE_NAME }}:latest
       - name: Push the container image
-        id: push_image
         shell: bash
         run: |
           buildah push \
-          --format oci \
-          ghcr.io/${{ github.repository }}/${{ inputs.IMAGE_NAME }}:${{ env.DATE_TAG }}
+            --format oci \
+            ghcr.io/${{ github.repository }}/${{ inputs.IMAGE_NAME }}:${{ env.DATE_TAG }}
 
           buildah push \
-          --format oci \
-          ghcr.io/${{ github.repository }}/${{ inputs.IMAGE_NAME }}:latest
+            --format oci \
+            ghcr.io/${{ github.repository }}/${{ inputs.IMAGE_NAME }}:latest
   scan:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+      - name: Authenticate to the registry
+        shell: bash
+        run: |
+          mkdir --parents "${HOME}/.docker"
+          echo "${{ secrets.GITHUB_TOKEN }}" \
+            | buildah login \
+              --authfile "${HOME}/.docker/config.json" \
+              --username "${{ github.actor }}" \
+              --password-stdin \
+              ghcr.io
       - name: Scan Container Image (trivy)
-        uses: aquasecurity/trivy-action@0.35.0
-        with:
-          image-ref: 'ghcr.io/${{ github.repository }}/${{ inputs.IMAGE_NAME }}:latest'
-          format: 'table'
-          exit-code: '1'
-          ignore-unfixed: true
-          vuln-type: 'os,library'
-          severity: 'CRITICAL,HIGH'
-          trivyignores: '.trivyignore'
+        shell: bash
+        env:
+          TRIVY_SEVERITY: CRITICAL,HIGH
+        run: |
+          .github/scripts/trivy.bash \
+            'ghcr.io/${{ github.repository }}/${{ inputs.IMAGE_NAME }}:latest' \
+            --ignorefile .trivyignore
       - name: Scan Container Image (grype)
-        uses: anchore/scan-action@v7.3.2
-        with:
-          image: 'ghcr.io/${{ github.repository }}/${{ inputs.IMAGE_NAME }}:latest'
-          output-format: 'table'
-          severity-cutoff: 'high'
-          only-fixed: 'true'
-          by-cve: 'true'
+        shell: bash
+        env:
+          GRYPE_SEVERITY: high
+        run: |
+          .github/scripts/grype.bash \
+            'ghcr.io/${{ github.repository }}/${{ inputs.IMAGE_NAME }}:latest' \
+            --config .grype.yaml
   prune:
     needs: scan
     runs-on: ubuntu-latest
     steps:
       - name: Prune all but the most recent 3 images
+        shell: bash
         run: |
-          IMAGES_URL=$(
-            curl -Ls \
-              -H "Accept: application/vnd.github+json" \
-              -H "Authorization: Bearer ${{ secrets.REGISTRY_AUTH_TOKEN }}" \
-              -H "X-GitHub-Api-Version: 2022-11-28" \
-              --url "https://api.github.com/user/packages?package_type=container" \
-            | jq --arg IMAGE_NAME ${{ inputs.IMAGE_NAME }} -r '.[] | select(.url | test($IMAGE_NAME)) | .url'
-          )
-
-          echo "URL: ${IMAGES_URL}"
-          sleep 3
+          PACKAGE_NAME="${{ github.event.repository.name }}%2F${{ inputs.IMAGE_NAME }}"
 
           IMAGES_LIST=$(
-            curl -Ls \
+            curl --silent --fail \
               -H "Accept: application/vnd.github+json" \
-              -H "Authorization: Bearer ${{ secrets.REGISTRY_AUTH_TOKEN }}" \
+              -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
               -H "X-GitHub-Api-Version: 2022-11-28" \
-              --url "${IMAGES_URL}/versions" \
-            | jq -r -s '.[] | sort_by(.created_at) | reverse | .[3:] | .[].url'
+              --url "https://api.github.com/user/packages/container/${PACKAGE_NAME}/versions?per_page=100" \
+            | jq -r 'sort_by(.created_at) | reverse | .[3:] | .[].url'
           )
 
-          sleep 3
           if [[ -n ${IMAGES_LIST} ]]; then
             while read -r IMAGE; do
               echo "Deleting: ${IMAGE}"
-              curl -Ls \
+              curl --silent --fail \
                 -X DELETE \
                 -H "Accept: application/vnd.github+json" \
-                -H "Authorization: Bearer ${{ secrets.REGISTRY_AUTH_TOKEN }}" \
+                -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
                 -H "X-GitHub-Api-Version: 2022-11-28" \
                 --url "${IMAGE}"
               sleep 3
