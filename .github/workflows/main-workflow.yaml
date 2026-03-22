@@ -4,6 +4,9 @@
 name: Main
 on:
   workflow_dispatch:
+permissions:
+  contents: read
+  packages: write
 jobs:
   create-matrix:
     name: Build and Prune Images
